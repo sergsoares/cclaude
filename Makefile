@@ -1,6 +1,6 @@
 # Makefile for Claude Agent Container Image
 
-.PHONY: build run stop clean test validate
+.PHONY: build run stop clean test validate claude
 
 # Variables
 IMAGE_NAME := claude-agent-image
@@ -30,6 +30,10 @@ clean:
 # Enter bash inside container
 bash:
 	podman exec -it $(CONTAINER_NAME) bash
+
+# Run claude command inside container (usage: make claude CMD="your command here")
+claude:
+	podman run --rm -it -v $(PWD):/workspace -w /workspace $(PORTS) $(IMAGE_NAME) claude $(CMD)
 
 # Test all installed tools
 test:
@@ -87,6 +91,7 @@ help:
 	@echo "  stop            - Stop the running container"
 	@echo "  clean           - Remove the container image"
 	@echo "  bash            - Enter bash inside container"
+	@echo "  claude CMD=\"..\" - Run claude command inside container"
 	@echo "  test            - Test all installed tools"
 	@echo "  test-overmind   - Test overmind process management"
 	@echo "  test-tls        - Test TLS certificate functionality"
