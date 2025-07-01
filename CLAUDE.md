@@ -55,6 +55,7 @@ The container now supports TLS encryption for ttyd terminal access:
 - `CERT_VALIDITY_DAYS`: Certificate validity period (default: 365)
 - `CERT_KEY_SIZE`: RSA key size in bits (default: 4096)
 - `TTYD_PORT`: ttyd listening port (default: 7681)
+- `TTYD_COMMAND`: Shell command to run in ttyd (default: bash)
 
 ### Features
 - Runtime certificate generation using OpenSSL
@@ -65,6 +66,20 @@ The container now supports TLS encryption for ttyd terminal access:
 
 ### Usage
 The container automatically generates TLS certificates at startup and launches ttyd with HTTPS enabled on port 7681.
+
+#### Custom Shell Commands
+You can specify a different shell or command for ttyd by setting the `TTYD_COMMAND` environment variable:
+
+```bash
+# Use zsh instead of bash
+podman run -e TTYD_COMMAND="zsh" -p 7681:7681 claude-agent
+
+# Run a custom script
+podman run -e TTYD_COMMAND="/path/to/script.sh" -p 7681:7681 claude-agent
+
+# Use fish shell
+podman run -e TTYD_COMMAND="fish" -p 7681:7681 claude-agent
+```
 
 ## Notifications
 - There is a bash function prepared for notify you can call like in the example with a brief with max 5 words the status of tasks: notify_claude "<CONTENT>" 

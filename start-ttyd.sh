@@ -10,6 +10,7 @@ CERT_COMMON_NAME=${CERT_COMMON_NAME:-"localhost"}
 CERT_VALIDITY_DAYS=${CERT_VALIDITY_DAYS:-365}
 CERT_KEY_SIZE=${CERT_KEY_SIZE:-4096}
 TTYD_PORT=${TTYD_PORT:-7681}
+TTYD_COMMAND=${TTYD_COMMAND:-"bash"}
 CERT_DIR="/home/agent/certs"
 CERT_FILE="$CERT_DIR/cert.pem"
 KEY_FILE="$CERT_DIR/key.pem"
@@ -120,6 +121,7 @@ validate_certificate() {
 launch_ttyd() {
     log_info "Starting ttyd with TLS encryption..."
     log_info "Port: $TTYD_PORT"
+    log_info "Command: $TTYD_COMMAND"
     log_info "Certificate: $CERT_FILE"
     log_info "Private Key: $KEY_FILE"
     
@@ -136,7 +138,7 @@ launch_ttyd() {
         --ssl-key "$KEY_FILE" \
         --port "$TTYD_PORT" \
         --writable \
-        bash
+        $TTYD_COMMAND
 }
 
 # Main execution
