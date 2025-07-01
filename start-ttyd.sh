@@ -11,6 +11,8 @@ CERT_VALIDITY_DAYS=${CERT_VALIDITY_DAYS:-365}
 CERT_KEY_SIZE=${CERT_KEY_SIZE:-4096}
 TTYD_PORT=${TTYD_PORT:-7681}
 TTYD_COMMAND=${TTYD_COMMAND:-"bash"}
+TTYD_AUTH_USER=${TTYD_AUTH_USER:-""}
+TTYD_AUTH_PASSWORD=${TTYD_AUTH_PASSWORD:-""}
 CERT_DIR="/home/agent/certs"
 CERT_FILE="$CERT_DIR/cert.pem"
 KEY_FILE="$CERT_DIR/key.pem"
@@ -131,14 +133,28 @@ launch_ttyd() {
         exit 1
     fi
     
-    # Launch ttyd with SSL enabled
-    exec ttyd \
-        --ssl \
-        --ssl-cert "$CERT_FILE" \
-        --ssl-key "$KEY_FILE" \
-        --port "$TTYD_PORT" \
-        --writable \
-        $TTYD_COMMAND
+    # Build ttyd command with optional basic auth
+    TTYD_ARGS=(
+        "--ssl"
+        "--ssl-cert" "$CERT_FILE"
+        "--ssl-key" "$KEY_FILE"
+        "--port" "$TTYD_PORT"
+        "--writable"
+    )
+    
+    # Add basic authentication if credentials are provided
+    if [[ -n "$TTYD_AUTH_USER" && -n "$TTYD_AUTH_PASSWORD" ]]; then
+        log_info "Basic authentication enabled for user: $TTYD_AUTH_USER"
+        TTYD_ARGS+=("--credential" "$TTYD_AUTH_USER:$TTYD_AUTH_PASSWORD")
+    else
+        log_warn "No authentication configured - terminal will be publicly accessible"
+    fi
+    
+    # Add the command to execute
+    TTYD_ARGS+=("$TTYD_COMMAND")
+    
+    # Launch ttyd with all configured arguments
+    exec ttyd "${TTYD_ARGS[@]}"
 }
 
 # Main execution

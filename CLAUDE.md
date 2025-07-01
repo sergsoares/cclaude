@@ -56,6 +56,8 @@ The container now supports TLS encryption for ttyd terminal access:
 - `CERT_KEY_SIZE`: RSA key size in bits (default: 4096)
 - `TTYD_PORT`: ttyd listening port (default: 7681)
 - `TTYD_COMMAND`: Shell command to run in ttyd (default: bash)
+- `TTYD_AUTH_USER`: Basic authentication username (optional)
+- `TTYD_AUTH_PASSWORD`: Basic authentication password (optional)
 
 ### Features
 - Runtime certificate generation using OpenSSL
@@ -63,6 +65,7 @@ The container now supports TLS encryption for ttyd terminal access:
 - Automatic certificate validation and renewal
 - Secure file permissions for certificate files
 - TLS encryption for all terminal traffic
+- Optional HTTP Basic Authentication for access control
 
 ### Usage
 The container automatically generates TLS certificates at startup and launches ttyd with HTTPS enabled on port 7681.
@@ -80,6 +83,25 @@ podman run -e TTYD_COMMAND="/path/to/script.sh" -p 7681:7681 claude-agent
 # Use fish shell
 podman run -e TTYD_COMMAND="fish" -p 7681:7681 claude-agent
 ```
+
+#### Basic Authentication
+You can secure the terminal access with HTTP Basic Authentication by setting username and password:
+
+```bash
+# Enable basic authentication
+podman run -e TTYD_AUTH_USER="admin" -e TTYD_AUTH_PASSWORD="secure123" -p 7681:7681 claude-agent
+
+# Combined with custom shell and TLS settings
+podman run \
+  -e TTYD_AUTH_USER="claude" \
+  -e TTYD_AUTH_PASSWORD="mypassword" \
+  -e TTYD_COMMAND="zsh" \
+  -e CERT_COMMON_NAME="example.com" \
+  -p 7681:7681 \
+  claude-agent
+```
+
+**Security Note**: When basic authentication is not configured, the terminal will be publicly accessible. Always set authentication credentials in production environments.
 
 ## Notifications
 - There is a bash function prepared for notify you can call like in the example with a brief with max 5 words the status of tasks: notify_claude "<CONTENT>" 

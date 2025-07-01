@@ -5,6 +5,8 @@ FROM node:20.19.3-bookworm-slim@sha256:f8f6771d949ff351c061de64ef9cbfbc594901588
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PATH="/snap/bin:$PATH"
 ENV TTYD_COMMAND=bash
+ENV TTYD_AUTH_USER=""
+ENV TTYD_AUTH_PASSWORD=""
 
 # Install system dependencies and update package manager
 RUN apt-get update && apt-get install -y \
