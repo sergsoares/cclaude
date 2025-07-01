@@ -15,13 +15,19 @@ This project is to maintaing a Dockerfile for create a image already prepared to
 - jq
 - envsubst
 
-## Process Management
-The container uses [DarthSim/overmind](https://github.com/DarthSim/overmind) for managing multiple processes:
+## Container Entry Points
 
-- **Caddy** - Web server running on port 8080
-- **ttyd** - Terminal server running on port 7681 with writable access
+### Current Implementation
+- **Direct ttyd** - Terminal server running on port 7681 with writable access
+- Single-process container with ttyd as the main entrypoint
 
-### Overmind Commands
+### Process Management (Available but not active)
+The container includes [DarthSim/overmind](https://github.com/DarthSim/overmind) for managing multiple processes (kept for future use):
+
+- **Caddy** - Web server running on port 8080 (available via overmind)
+- **ttyd** - Terminal server (can be managed via overmind)
+
+### Overmind Commands (when using overmind entrypoint)
 - `overmind ps` - Show process status
 - `overmind restart web` - Restart Caddy web server
 - `overmind restart terminal` - Restart ttyd terminal
@@ -31,3 +37,8 @@ The container uses [DarthSim/overmind](https://github.com/DarthSim/overmind) for
 - `make test-overmind` - Test overmind process management
 - `make restart-web` - Restart Caddy web server
 - `make restart-terminal` - Restart ttyd terminal
+
+## Git rules
+- Every work will be done in feature branches that can be created following that example: feature/example
+- Not commit directly to main
+- After end of any success changes can push to feature branch

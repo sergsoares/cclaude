@@ -96,5 +96,5 @@ EXPOSE 7681 8080
 COPY Procfile /home/agent/Procfile
 COPY Caddyfile.simple /home/agent/Caddyfile.simple
 
-# Entry point
-CMD ["overmind", "start"]
+# Entry point - Direct ttyd (keeping overmind for future use)
+CMD ["ttyd", "--port", "7681", "--writable", "bash"]
