@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
     libjson-c-dev \
     libssl-dev \
     zlib1g-dev \
+    tmux \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ttyd from pre-built binary (more reliable than building from source)
@@ -68,6 +69,12 @@ RUN apt-get update && \
     apt-get install -y jq && \
     rm -rf /var/lib/apt/lists/*
 
+# Install overmind process manager
+RUN curl -L https://github.com/DarthSim/overmind/releases/download/v2.5.1/overmind-v2.5.1-linux-amd64.gz -o overmind.gz && \
+    gunzip overmind.gz && \
+    chmod +x overmind && \
+    mv overmind /usr/local/bin/
+
 # Configure for Podman compatibility
 RUN mkdir -p /var/lib/containers && \
     chmod 755 /var/lib/containers
@@ -85,5 +92,9 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Expose ports for ttyd and caddy
 EXPOSE 7681 8080
 
+# Copy Procfile and Caddyfile
+COPY Procfile /home/agent/Procfile
+COPY Caddyfile.simple /home/agent/Caddyfile.simple
+
 # Entry point
-CMD ["sh", "-c", "caddy start --config /etc/caddy/Caddyfile & ttyd --port 7681 --writable bash"]
+CMD ["overmind", "start"]

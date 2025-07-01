@@ -27,6 +27,10 @@ stop:
 clean:
 	podman rmi $(IMAGE_NAME)
 
+# Enter bash inside container
+bash:
+	podman exec -it $(CONTAINER_NAME) bash
+
 # Test all installed tools
 test:
 	podman exec $(CONTAINER_NAME) node --version
@@ -38,6 +42,18 @@ test:
 	podman exec $(CONTAINER_NAME) yq --version
 	podman exec $(CONTAINER_NAME) jq --version
 	podman exec $(CONTAINER_NAME) envsubst --version
+	podman exec $(CONTAINER_NAME) overmind --version
+
+# Test overmind process management
+test-overmind:
+	podman exec $(CONTAINER_NAME) overmind ps
+
+# Restart a specific process
+restart-web:
+	podman exec $(CONTAINER_NAME) overmind restart web
+
+restart-terminal:
+	podman exec $(CONTAINER_NAME) overmind restart terminal
 
 # Validate container is running
 validate:
@@ -56,14 +72,18 @@ test-cycle: build run test stop
 # Show help
 help:
 	@echo "Available targets:"
-	@echo "  build         - Build the container image"
-	@echo "  run           - Run container in detached mode"
+	@echo "  build           - Build the container image"
+	@echo "  run             - Run container in detached mode"
 	@echo "  run-interactive - Run container interactively"
-	@echo "  stop          - Stop the running container"
-	@echo "  clean         - Remove the container image"
-	@echo "  test          - Test all installed tools"
-	@echo "  validate      - Check if container is running"
-	@echo "  logs          - Show container logs"
-	@echo "  deploy        - Build and run (full deployment)"
-	@echo "  test-cycle    - Full test cycle (build, run, test, stop)"
-	@echo "  help          - Show this help message"
+	@echo "  stop            - Stop the running container"
+	@echo "  clean           - Remove the container image"
+	@echo "  bash            - Enter bash inside container"
+	@echo "  test            - Test all installed tools"
+	@echo "  test-overmind   - Test overmind process management"
+	@echo "  restart-web     - Restart Caddy web server"
+	@echo "  restart-terminal- Restart ttyd terminal"
+	@echo "  validate        - Check if container is running"
+	@echo "  logs            - Show container logs"
+	@echo "  deploy          - Build and run (full deployment)"
+	@echo "  test-cycle      - Full test cycle (build, run, test, stop)"
+	@echo "  help            - Show this help message"

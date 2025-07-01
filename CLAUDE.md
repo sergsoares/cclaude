@@ -14,3 +14,20 @@ This project is to maintaing a Dockerfile for create a image already prepared to
 - yq
 - jq
 - envsubst
+
+## Process Management
+The container uses [DarthSim/overmind](https://github.com/DarthSim/overmind) for managing multiple processes:
+
+- **Caddy** - Web server running on port 8080
+- **ttyd** - Terminal server running on port 7681 with writable access
+
+### Overmind Commands
+- `overmind ps` - Show process status
+- `overmind restart web` - Restart Caddy web server
+- `overmind restart terminal` - Restart ttyd terminal
+- `overmind connect <process>` - Connect to a specific process
+
+### Available Makefile targets
+- `make test-overmind` - Test overmind process management
+- `make restart-web` - Restart Caddy web server
+- `make restart-terminal` - Restart ttyd terminal
