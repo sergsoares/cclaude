@@ -69,6 +69,15 @@ deploy: build run
 # Full test cycle (build, run, test, stop)
 test-cycle: build run test stop
 
+# Test TLS certificate functionality
+test-tls:
+	podman exec $(CONTAINER_NAME) openssl x509 -in /home/agent/certs/cert.pem -text -noout
+	podman exec $(CONTAINER_NAME) openssl x509 -in /home/agent/certs/cert.pem -checkend 86400 -noout
+
+# Test HTTPS connectivity
+test-https:
+	curl -k -I https://localhost:7681
+
 # Show help
 help:
 	@echo "Available targets:"
@@ -80,6 +89,8 @@ help:
 	@echo "  bash            - Enter bash inside container"
 	@echo "  test            - Test all installed tools"
 	@echo "  test-overmind   - Test overmind process management"
+	@echo "  test-tls        - Test TLS certificate functionality"
+	@echo "  test-https      - Test HTTPS connectivity"
 	@echo "  restart-web     - Restart Caddy web server"
 	@echo "  restart-terminal- Restart ttyd terminal"
 	@echo "  validate        - Check if container is running"

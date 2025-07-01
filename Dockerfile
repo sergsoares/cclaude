@@ -92,9 +92,10 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Expose ports for ttyd and caddy
 EXPOSE 7681 8080
 
-# Copy Procfile and Caddyfile
+# Copy Procfile, Caddyfile and startup script
 COPY Procfile /home/agent/Procfile
 COPY Caddyfile.simple /home/agent/Caddyfile.simple
+COPY --chmod=755 start-ttyd.sh /home/agent/start-ttyd.sh
 
-# Entry point - Direct ttyd (keeping overmind for future use)
-CMD ["ttyd", "--port", "7681", "--writable", "bash"]
+# Entry point - TLS-enabled ttyd with runtime certificate generation
+CMD ["/home/agent/start-ttyd.sh"]

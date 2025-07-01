@@ -37,8 +37,35 @@ The container includes [DarthSim/overmind](https://github.com/DarthSim/overmind)
 - `make test-overmind` - Test overmind process management
 - `make restart-web` - Restart Caddy web server
 - `make restart-terminal` - Restart ttyd terminal
+- `make test-tls` - Test TLS certificate functionality
+- `make test-https` - Test HTTPS connectivity
 
 ## Git rules
 - Every work will be done in feature branches that can be created following that example: feature/example
 - Not commit directly to main
 - After end of any success changes can push to feature branch
+
+
+## TLS Configuration
+
+The container now supports TLS encryption for ttyd terminal access:
+
+### Environment Variables
+- `CERT_COMMON_NAME`: Certificate common name (default: localhost)
+- `CERT_VALIDITY_DAYS`: Certificate validity period (default: 365)
+- `CERT_KEY_SIZE`: RSA key size in bits (default: 4096)
+- `TTYD_PORT`: ttyd listening port (default: 7681)
+
+### Features
+- Runtime certificate generation using OpenSSL
+- Self-signed certificates with proper Subject Alternative Names
+- Automatic certificate validation and renewal
+- Secure file permissions for certificate files
+- TLS encryption for all terminal traffic
+
+### Usage
+The container automatically generates TLS certificates at startup and launches ttyd with HTTPS enabled on port 7681.
+
+## Notifications
+- There is a bash function prepared for notify you can call like in the example with a brief with max 5 words the status of tasks: notify_claude "<CONTENT>" 
+  When job is done or any error or pending edit is necessary
