@@ -106,3 +106,7 @@ podman run \
 ## Notifications
 - There is a bash function prepared for notify you can call like in the example with a brief with max 5 words the status of tasks: notify_claude "<CONTENT>" 
   When job is done or any error or pending edit is necessary
+
+
+## Github Actions
+- Only use makefile commands inside Github actions to allow debug sessions locally

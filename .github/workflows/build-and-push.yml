@@ -1,0 +1,61 @@
+name: Build and Push to ttl.sh
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: claude-agent-image
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install Podman
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y podman
+        
+    - name: Build container image
+      run: make build
+      
+    - name: Test container image
+      run: |
+        make run
+        sleep 10
+        make test
+        make stop
+        
+    - name: Generate ttl.sh tag
+      id: tag
+      run: |
+        if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          # Main branch gets 7 day TTL
+          echo "ttl_tag=ttl.sh/claude-agent-$(date +%Y%m%d-%H%M%S):7d" >> $GITHUB_OUTPUT
+        elif [ "${{ github.event_name }}" = "push" ]; then
+          # Feature branches get 24 hour TTL
+          echo "ttl_tag=ttl.sh/claude-agent-$(echo ${{ github.ref_name }} | sed 's/[^a-zA-Z0-9-]/-/g')-$(date +%Y%m%d-%H%M%S):24h" >> $GITHUB_OUTPUT
+        else
+          # PRs get 1 hour TTL
+          echo "ttl_tag=ttl.sh/claude-agent-pr-${{ github.event.number }}-$(date +%Y%m%d-%H%M%S):1h" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Tag and push to ttl.sh
+      run: |
+        podman tag ${{ env.IMAGE_NAME }} ${{ steps.tag.outputs.ttl_tag }}
+        podman push ${{ steps.tag.outputs.ttl_tag }}
+        
+    - name: Output image URL
+      run: |
+        echo "🚀 Container image pushed to: ${{ steps.tag.outputs.ttl_tag }}"
+        echo "📋 Pull command: podman pull ${{ steps.tag.outputs.ttl_tag }}"
