@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     zlib1g-dev \
     tmux \
+    jq \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ttyd from pre-built binary (more reliable than building from source)
@@ -42,7 +43,7 @@ RUN curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --de
     rm -rf /var/lib/apt/lists/*
 
 # Install Claude Code CLI
-RUN curl -fsSL https://claude.ai/install.sh | sh
+RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # Install kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
@@ -67,10 +68,6 @@ RUN curl https://baltocdn.com/helm/signing.asc | gpg --dearmor -o /usr/share/key
 RUN curl -L "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64" -o /usr/local/bin/yq && \
     chmod +x /usr/local/bin/yq
 
-# Install jq
-RUN apt-get update && \
-    apt-get install -y jq && \
-    rm -rf /var/lib/apt/lists/*
 
 # Install overmind process manager
 RUN curl -L https://github.com/DarthSim/overmind/releases/download/v2.5.1/overmind-v2.5.1-linux-amd64.gz -o overmind.gz && \
