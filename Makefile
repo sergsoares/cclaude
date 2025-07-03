@@ -1,6 +1,6 @@
 # Makefile for Claude Agent Container Image
 
-.PHONY: build run stop clean test validate claude
+.PHONY: build run stop clean test validate validate-claude claude
 
 # Variables
 IMAGE_NAME := claude-agent-image
@@ -47,6 +47,7 @@ test:
 	podman exec $(CONTAINER_NAME) jq --version
 	podman exec $(CONTAINER_NAME) envsubst --version
 	podman exec $(CONTAINER_NAME) overmind --version
+	podman exec $(CONTAINER_NAME) claude --version
 
 # Test overmind process management
 test-overmind:
@@ -62,6 +63,10 @@ restart-terminal:
 # Validate container is running
 validate:
 	podman ps | grep $(CONTAINER_NAME)
+
+# Validate Claude Code is installed, install if missing
+validate-claude:
+	@podman exec $(CONTAINER_NAME) bash -c 'if ! command -v claude >/dev/null 2>&1; then echo "Claude Code not found, installing..."; npm install -g @anthropic-ai/claude-code; echo "Claude Code installed successfully"; else echo "Claude Code is already installed: $$(claude --version)"; fi'
 
 # Show container logs
 logs:
@@ -99,6 +104,7 @@ help:
 	@echo "  restart-web     - Restart Caddy web server"
 	@echo "  restart-terminal- Restart ttyd terminal"
 	@echo "  validate        - Check if container is running"
+	@echo "  validate-claude - Validate Claude Code installation, install if missing"
 	@echo "  logs            - Show container logs"
 	@echo "  deploy          - Build and run (full deployment)"
 	@echo "  test-cycle      - Full test cycle (build, run, test, stop)"

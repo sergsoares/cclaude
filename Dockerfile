@@ -42,8 +42,8 @@ RUN curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --de
     apt-get install -y caddy && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Claude Code CLI
-RUN curl -fsSL https://claude.ai/install.sh | bash
+# Install Claude Code CLI via npm
+RUN npm install -g @anthropic-ai/claude-code
 
 # Install kubectl
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
