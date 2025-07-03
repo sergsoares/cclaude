@@ -145,6 +145,7 @@ PODMAN_CMD=(podman run)
 # Add basic flags
 PODMAN_CMD+=(--rm)
 PODMAN_CMD+=(--name "$CONTAINER_NAME")
+PODMAN_CMD+=(--userns=keep-id:uid=1001,gid=1001)
 
 # Mount configuration if requested
 if [[ "$MOUNT_CONFIG" == true ]]; then
