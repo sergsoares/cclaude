@@ -35,12 +35,6 @@ RUN apt-get update && apt-get install -y \
 RUN curl -L https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 -o /usr/local/bin/ttyd && \
     chmod +x /usr/local/bin/ttyd
 
-# Install Caddy
-RUN curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && \
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list && \
-    apt-get update && \
-    apt-get install -y caddy && \
-    rm -rf /var/lib/apt/lists/*
 
 # Install Claude Code CLI via npm
 RUN npm install -g @anthropic-ai/claude-code
@@ -85,16 +79,12 @@ RUN useradd -m -s /bin/bash agent && \
 USER agent
 WORKDIR /home/agent
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8080/health || exit 1
 
-# Expose ports for ttyd and caddy
-EXPOSE 7681 8080
+# Expose port for ttyd
+EXPOSE 7681
 
-# Copy Procfile, Caddyfile and startup script
+# Copy Procfile and startup script
 COPY Procfile /home/agent/Procfile
-COPY Caddyfile.simple /home/agent/Caddyfile.simple
 COPY --chmod=755 start-ttyd.sh /home/agent/start-ttyd.sh
 
 # Entry point - TLS-enabled ttyd with runtime certificate generation

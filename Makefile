@@ -5,7 +5,7 @@
 # Variables
 IMAGE_NAME := claude-agent-image
 CONTAINER_NAME := claude-agent
-PORTS := -p 7681:7681 -p 8080:8080
+PORTS := -p 7681:7681
 
 # Build the container image
 build:
@@ -39,7 +39,6 @@ claude:
 test:
 	podman exec $(CONTAINER_NAME) node --version
 	podman exec $(CONTAINER_NAME) ttyd --version
-	podman exec $(CONTAINER_NAME) caddy version
 	podman exec $(CONTAINER_NAME) kubectl version --client
 	podman exec $(CONTAINER_NAME) terraform --version
 	podman exec $(CONTAINER_NAME) helm version
@@ -53,10 +52,7 @@ test:
 test-overmind:
 	podman exec $(CONTAINER_NAME) overmind ps
 
-# Restart a specific process
-restart-web:
-	podman exec $(CONTAINER_NAME) overmind restart web
-
+# Restart terminal process
 restart-terminal:
 	podman exec $(CONTAINER_NAME) overmind restart terminal
 
@@ -101,7 +97,6 @@ help:
 	@echo "  test-overmind   - Test overmind process management"
 	@echo "  test-tls        - Test TLS certificate functionality"
 	@echo "  test-https      - Test HTTPS connectivity"
-	@echo "  restart-web     - Restart Caddy web server"
 	@echo "  restart-terminal- Restart ttyd terminal"
 	@echo "  validate        - Check if container is running"
 	@echo "  validate-claude - Validate Claude Code installation, install if missing"
