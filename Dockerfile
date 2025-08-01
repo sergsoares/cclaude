@@ -79,7 +79,6 @@ RUN useradd -m -s /bin/bash agent && \
 USER agent
 WORKDIR /home/agent
 
-
 # Expose port for ttyd
 EXPOSE 7681
 

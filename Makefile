@@ -7,6 +7,10 @@ IMAGE_NAME := claude-agent-image
 CONTAINER_NAME := claude-agent
 PORTS := -p 7681:7681
 
+# Install cli 
+install:
+	sudo install -o root -g root -m 0755 cclaude /usr/local/bin/cclaude
+
 # Build the container image
 build:
 	podman build -t $(IMAGE_NAME) .
