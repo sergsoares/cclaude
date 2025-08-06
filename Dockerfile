@@ -1,5 +1,5 @@
 # Use the specified Node.js base image
-FROM node:20.19.3-bookworm-slim@sha256:f8f6771d949ff351c061de64ef9cbfbc5949015883fb3b016b34aca6d0e5b8cc
+FROM docker.io/node:20.19.3-bookworm-slim@sha256:f8f6771d949ff351c061de64ef9cbfbc5949015883fb3b016b34aca6d0e5b8cc
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive

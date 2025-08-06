@@ -11,6 +11,11 @@ PORTS := -p 7681:7681
 install:
 	sudo install -o root -g root -m 0755 cclaude /usr/local/bin/cclaude
 
+# Install cli 
+install-mac:
+	sudo chmod +x cclaude
+	sudo cp cclaude /usr/local/bin/cclaude
+
 # Build the container image
 build:
 	podman build -t $(IMAGE_NAME) .
